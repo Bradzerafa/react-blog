@@ -1,6 +1,6 @@
 const BlogList = ({blogPosts, deleteBtn}) => {
 
-
+    
     return ( 
         <div className="blog-list">
              {blogPosts.map((post) => (
@@ -15,4 +15,4 @@ const BlogList = ({blogPosts, deleteBtn}) => {
      );
 }
  
-export default BlogList;
+export default BlogList; 

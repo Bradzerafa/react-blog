@@ -2,26 +2,47 @@ import {useState, useEffect} from 'react';
 import BlogList from './components/BlogList'
 
 const Home = () => {
-    const [blogs, setBlogs] = useState([
-        {title: 'My new blog post', body: 'This is my first blog post', author: 'Brad', id: 1},
-        {title: 'I got this working', body: 'I cant believe i got this working', author: 'Brad', id: 2},
-        {title: 'Great work', body: 'Amazing work getting this working', author: 'Brad', id: 3}
-    ])
+    const [blogs, setBlogs] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [dataError, setDataError] = useState(false)
 
     function deletePost(id){
-        const newBlogs = blogs.filter(blog => blog.id !== id);
-        setBlogs(newBlogs);
+        // const newBlogs = blogs.filter(blog => blog.id !== id);
+        // setBlogs(newBlogs);
+
+        console.log('Deleted')
     }
+
+    
 
 
     useEffect(() => {
-        console.log("useEffect")
-    }, [blogs])
+        fetch('http://localhost:8000/blogs')
+        .then(res => {
+           if (!res.ok){
+             throw Error()  
+           }
+            return res.json()
+        })
+        .then(data => {
+            setBlogs(data)
+            setIsLoading(false)
+            setDataError(false)
+        })
+        .catch (err => {
+            console.log(err.message)
+            setDataError(true)
+            setIsLoading(false)
+        })
+    }, [])
 
 
     return ( 
         <div className="home">
-           <BlogList blogPosts={blogs} deleteBtn={deletePost} />
+            {/* The blogs && is conditional templating */}
+            {isLoading && <h3>Loading...</h3>}
+            {dataError && <h3>Sorry, there was an error fetching the data. Please refresh</h3>}
+            {blogs &&  <BlogList blogPosts={blogs} deleteBtn={deletePost}/>}
         </div>
 
      );
